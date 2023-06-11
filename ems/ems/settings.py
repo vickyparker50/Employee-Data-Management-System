@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'ems.wsgi.application'
 DATABASES={
    'default':{
       'ENGINE':'django.db.backends.postgresql_psycopg2',
-      'NAME':'empol',
-      'USER':'postgres',
-      'PASSWORD':'533201',
+      'NAME':'****',
+      'USER':'*****',
+      'PASSWORD':'****',
       'HOST':'localhost',
       'PORT':'5432',
    }
