@@ -1,0 +1,154 @@
+{% extends "employee_information/base.html" %} {% block pageContent %}
+{% load helper %}
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Employee List</h4>
+            {% if not request.user|in_group:"user" %}
+
+            <div class="text-start">
+                <button class="mdc-button mdc-button--raised mdc-ripple-upgraded btn-sm" id="create_new"><i class="material-icons mdc-button__icon">add</i><span> Add New</span></button>
+            </div>
+            {%endif%}
+            {% if request.user|in_group:"user" %}
+            <button id="download_pdf" class="mdc-button mdc-button--raised p-1 icon-button filled-button--success mdc-ripple-upgraded" title="Download PDF">
+                <i class="material-icons mdc-button__icon">picture_as_pdf</i> Download PDF
+            </button>
+            {%endif%}
+        </div>
+    </div>
+</div>
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card">
+        <div class="table-responsive">
+            <table class="table table-custom-striped table-bordered">
+                <colgroup>
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="10%">
+                    <col width="10%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="text-center py-1">No.</th>
+                        <th class="text-center py-1">Code</th>
+                        <th class="text-center py-1">Name</th>
+                        <th class="text-center py-1">Department</th>
+                        <th class="text-center py-1">Position</th>
+                        <th class="text-center py-1">Status</th>
+                        <th class="text-center py-1">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td class="px-2 py-1 text-center">{{ employee.id }}</td>
+                        <td class="px-2 py-1 text-start">{{ employee.code }}</td>
+                        <td class="px-2 py-1 text-start">{{ employee.firstname }} {{ employee.middlename }} {{ employee.lastname }}</td>
+                        <td class="px-2 py-1 text-start">{{ employee.department_id }}</td>
+                        <td class="px-2 py-1 text-start">{{ employee.position_id }}</td>
+                        <td class="px-2 py-1 text-center">
+                            {% if employee.status == 1 %}
+                            <span class="badge bg-primary rounded-pill px-3">Active</span> {% else %}
+                            <span class="badge bg-secondary rounded-pill px-3">Inactive</span> {% endif %}
+                        </td>
+                        <td class="px-2 py-1 text-center">
+                            <button class="mdc-button mdc-button--raised p-1 icon-button mdc-ripple-upgraded view-data" type="button" data-id="{{ employee.pk }}" title="View Details">
+                                <i class="material-icons mdc-button__icon">visibility</i>
+                            </button>
+                            
+                         <a href="{% url 'download_employee_pdf' employee.id %}" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                          </svg></a>
+                            
+                            
+                            {% if not request.user|in_group:"user" %}
+                            <button class="mdc-button mdc-button--raised p-1 icon-button filled-button--light mdc-ripple-upgraded edit-data" type="button" data-id="{{ employee.pk }}" title="Edit">
+                                <i class="material-icons mdc-button__icon">edit</i>
+                            </button>
+                            <button class="mdc-button mdc-button--raised p-1 icon-button filled-button--danger mdc-ripple-upgraded delete-data" type="button" data-id="{{ employee.pk }}" title="Delete">
+                                <i class="material-icons mdc-button__icon">deleteoutline</i>
+                            </button>
+                            
+                            {%endif%}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock pageContent %} {% block ScriptBlock %}
+<script>
+    $(document).ready(function() {
+        $('.download-data').click(function() {
+          var employeeId = $(this).data('id');
+          // Perform an AJAX request to retrieve the employee details
+          $.ajax({
+            url: '/download-employee-details/',
+            type: 'GET',
+            data: { employee_id: employeeId },
+            success: function(response) {
+              // Handle the response and initiate the download
+              var downloadUrl = response.download_url;
+              window.location.href = downloadUrl;
+            },
+            error: function(xhr, status, error) {
+              // Handle the error case
+              console.error(error);
+            }
+          });
+        });
+      });
+    $(function() {
+        $('#create_new').click(function() {
+            uni_modal("Add New Employee", "{% url 'manage_employees-page' %}", 'modal-lg')
+        })
+        $('.view-data').click(function() {
+            uni_modal("Employee Details", "{% url 'view-employee-page' %}?id=" + $(this).attr('data-id'), 'mid-large')
+        })
+        $('.edit-data').click(function() {
+            uni_modal("Edit Employee", "{% url 'manage_employees-page' %}?id=" + $(this).attr('data-id'), 'modal-lg')
+        })
+        $('.delete-data').click(function() {
+            _conf("Are you sure to delete this employee?", "delete_employee", [$(this).attr('data-id')])
+        })
+        $('#download_pdf').click(function() {
+            location.href = "{% url 'download_employees_pdf' %}";
+        })
+    })
+
+    function delete_employee($id) {
+        start_loader();
+        $.ajax({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            },
+            url: "{% url 'delete-employee' %}",
+            method: "POST",
+            data: {
+                id: $id
+            },
+            dataType: "json",
+            error: err => {
+                console.log(err)
+                alert_toast("An error occured.", 'error');
+                end_loader();
+            },
+            success: function(resp) {
+                if (typeof resp == 'object' && resp.status == 'success') {
+                    location.reload();
+                } else {
+                    alert_toast("An error occured.", 'error');
+                    end_loader();
+                }
+            }
+        })
+    }
+</script>
+{% endblock ScriptBlock %}

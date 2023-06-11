@@ -1,0 +1,43 @@
+{% load static %}
+{% load helper %}
+
+<!-- partial:partials/_sidebar.html -->
+<aside class="mdc-drawer mdc-drawer--dismissible mdc-drawer--open">
+    <div >
+        <img src="../../../static/employee_information/assets/material-admin/images/nann.JPEG" class="img-fluid" id="navpic" alt="" style="margin-top: 3px; max-width: 150%; margin-left: -59px;">
+
+    </div>
+    <div class="mdc-drawer__content">
+        <div class="mdc-list-group">
+            <nav class="mdc-list mdc-drawer-menu">
+                <div class="mdc-list-item mdc-drawer-item">
+                    <a class="mdc-drawer-link" href="{% url 'home-page' %}">
+                        <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">home</i> Home
+                    </a>
+                </div>
+                <div class="mdc-list-item mdc-drawer-item">
+                    <a class="mdc-drawer-link" href="{% url 'department-page' %}">
+                        <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">business</i> Department List
+                    </a>
+                </div>
+                
+                <div class="mdc-list-item mdc-drawer-item">
+                    <a class="mdc-drawer-link" href="{% url 'position-page' %}">
+                        <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">list</i> Position List
+                    </a>
+                </div>
+                <div class="mdc-list-item mdc-drawer-item">
+                    <a class="mdc-drawer-link" href="{% url 'employee-page' %}">
+                        <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">group</i> Employee List
+                    </a>
+                </div>
+                <div>
+                    <img src="../../../static/employee_information/assets/material-admin/images/—Pngtree—city landscape with purple color_5495731.png" class="img-fluid" style="margin-top: 69px;" alt="">
+                </div>
+                
+            </nav>
+        </div>
+
+    </div>
+</aside>
+<!-- partial -->
